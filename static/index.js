@@ -182,3 +182,36 @@ document.getElementById('SJB').addEventListener('click', function(event) {
     event.preventDefault();
     SendPayload();
 });
+
+async function UpdateY2JB() {
+    const btn = document.getElementById('update-btn');
+    const originalText = btn.innerText;
+    
+    try {
+        btn.innerText = "Updating...";
+        btn.disabled = true;
+
+        const response = await fetch('/update_y2jb', {
+            method: 'POST'
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error(`Server returned Status ${response.status} (${response.statusText}). Did you restart the server?`);
+        }
+
+        const result = await response.json();
+        
+        if (result.success) {
+            alert(result.message);
+        } else {
+            alert('Update failed: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert(error.message);
+    } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+    }
+}
