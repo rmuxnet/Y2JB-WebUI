@@ -61,6 +61,21 @@
                 </div>
                 
                 <div class="flex items-center gap-2">
+                    <div class="relative">
+                        <button onclick="toggleRepoList(event)" class="text-xs input-field px-3 py-1.5 rounded-lg border flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
+                            <span>Select Update</span>
+                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                        </button>
+                        <div id="repo-checklist" class="absolute right-0 mt-2 w-48 surface border rounded-xl shadow-xl py-2 z-50 hidden transition-all">
+                            <label class="flex items-center px-4 py-2 hover:bg-white/5 cursor-pointer gap-3">
+                                <input type="checkbox" id="update-all" value="all" checked class="rounded border-gray-700 bg-transparent text-brand-blue focus:ring-brand-blue">
+                                <span class="text-xs font-medium">All Payloads</span>
+                            </label>
+                            <div class="border-t border-oled-border my-1"></div>
+                            <div id="repo-items" class="max-h-48 overflow-y-auto custom-scroll"></div>
+                        </div>
+                    </div>
+
                     <button id="update-btn" onclick="updatePayloads()" class="text-sm font-medium opacity-60 hover:opacity-100 transition-opacity flex items-center gap-2 px-3 py-1.5 rounded-full">
                         <i class="fa-solid fa-arrows-rotate text-xs"></i>
                         <span>Update</span>

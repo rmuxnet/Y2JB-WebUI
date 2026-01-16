@@ -35,7 +35,7 @@ def get_latest_release_asset(repo, pattern):
         print(f"    [!] GitHub API Error for {repo}: {e}")
         return None
 
-def update_payloads():
+def update_payloads(targets=None):
     if not os.path.exists(CONFIG_FILE):
         return {"success": False, "message": "repos.json not found"}
 
@@ -46,6 +46,9 @@ def update_payloads():
     errors = []
 
     for name, data in config.items():
+        if targets and "all" not in targets and name not in targets:
+            continue
+
         print(f"[*] Processing {name}...")
         download_url = None
         save_path = data.get("save_path")

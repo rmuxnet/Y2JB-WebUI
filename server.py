@@ -203,10 +203,22 @@ def delete_payload():
             'message': 'Failed to delete file'
         }), 500
 
+@app.route('/list_repos')
+def list_repos():
+    try:
+        repo_file = os.path.join("static", "config", "repos.json")
+        with open(repo_file, 'r') as f:
+            repos = json.load(f)
+        return jsonify(list(repos.keys()))
+    except:
+        return jsonify([])
+
 @app.route('/update_repos', methods=['POST'])
 def update_repos():
     try:
-        result = update_payloads()
+        data = request.get_json() or {}
+        targets = data.get('targets', ['all'])
+        result = update_payloads(targets)
         return jsonify(result)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
