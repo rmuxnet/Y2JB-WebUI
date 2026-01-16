@@ -61,7 +61,22 @@
                 </div>
                 
                 <div class="flex items-center gap-2">
-                    <button id="update-btn" onclick="UpdateY2JB()" class="text-sm font-medium opacity-60 hover:opacity-100 transition-opacity flex items-center gap-2 px-3 py-1.5 rounded-full">
+                    <div class="relative">
+                        <button onclick="toggleRepoList(event)" class="text-xs input-field px-3 py-1.5 rounded-lg border flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
+                            <span>Select Update</span>
+                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                        </button>
+                        <div id="repo-checklist" class="absolute right-0 mt-2 w-48 surface border rounded-xl shadow-xl py-2 z-50 hidden transition-all">
+                            <label class="flex items-center px-4 py-2 hover:bg-white/5 cursor-pointer gap-3">
+                                <input type="checkbox" id="update-all" value="all" checked class="rounded border-gray-700 bg-transparent text-brand-blue focus:ring-brand-blue">
+                                <span class="text-xs font-medium">All Payloads</span>
+                            </label>
+                            <div class="border-t border-oled-border my-1"></div>
+                            <div id="repo-items" class="max-h-48 overflow-y-auto custom-scroll"></div>
+                        </div>
+                    </div>
+
+                    <button id="update-btn" onclick="updatePayloads()" class="text-sm font-medium opacity-60 hover:opacity-100 transition-opacity flex items-center gap-2 px-3 py-1.5 rounded-full">
                         <i class="fa-solid fa-arrows-rotate text-xs"></i>
                         <span>Update</span>
                     </button>
@@ -112,14 +127,14 @@
                 
                 <div class="flex flex-col sm:flex-row gap-3 w-full xl:w-auto">
                     <div class="flex gap-2 w-full sm:w-auto">
-                         <input type="text" id="directUrlInput" placeholder="URL (.bin/.elf)" class="input-field flex-1 sm:w-64 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-brand-light outline-none transition-all">
+                         <input type="text" id="directUrlInput" placeholder="URL (.bin/.elf/.js)" class="input-field flex-1 sm:w-64 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-brand-light outline-none transition-all">
                          <button onclick="directDownload()" class="px-3 py-2 bg-gray-200 dark:bg-gray-800 hover:bg-brand-blue hover:text-white rounded-lg text-xs font-bold transition-colors border border-transparent hover:border-brand-blue" title="Download from URL">
                              <i class="fa-solid fa-cloud-arrow-down"></i>
                          </button>
                     </div>
 
                     <div class="flex gap-2 w-full sm:w-auto">
-                        <input type="file" id="fileInput" accept=".bin,.elf" class="hidden">
+                        <input type="file" id="fileInput" accept=".bin,.elf,.js" class="hidden">
                         <button onclick="document.getElementById('fileInput').click()" class="flex-1 sm:flex-none px-4 py-2 input-field border rounded-lg text-sm font-medium hover:opacity-80 transition-opacity">
                             Select File
                         </button>

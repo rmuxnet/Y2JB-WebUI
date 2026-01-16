@@ -1,3 +1,4 @@
 /__pycache__
 /config
 /src/__pycache__
+static/config/settings.json
