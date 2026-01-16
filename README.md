@@ -20,7 +20,7 @@ Well not right now, i maybe fixing that in a next update.
 ### Do i still need to have Y2JB installed on my console ?
 Yes of course, this is not a replacement of [Y2JB](https://github.com/Gezine/Y2JB), make sure to install it first.
 ### How do I update payloads from GitHub?
-Use the **"Select Update"** menu in the navigation bar to choose which payloads to update. Repository configurations (Direct URL or GitHub Release) can be managed via the **"Repos"** button in the navigation bar. The system uses `repos.json` to track and fetch the latest versions.
+Navigate to the **Repository Manager** by clicking the **"Repos"** button in the navigation bar. From there, you can add repositories and update individual payloads using the refresh button next to each entry.
 ### Does this work with...
 You need something to host the server (pc, raspeberry pi, phone, ...) once the server is up you can access the WebUI from anything that can display a webpage (Android, IOS, PC, Nintendo Switch, ...).
 ### Can i upload any payload ?
