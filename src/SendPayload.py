@@ -3,19 +3,14 @@ import sys
 import time
 
 def send_payload(file_path, host, port=50000, tries=5):
-    """
-    Send a file via raw TCP socket
-    """
-    attempt = 0  # Track actual attempts
+    attempt = 0
     while attempt < tries:
         try:
-            # Read file in binary mode
             with open(file_path, 'rb') as f:
                 data = f.read()
             
-            # Create TCP socket
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(10)  # 10 second timeout
+            sock.settimeout(10)
             
             print(f"Connecting to {host}:{port}...")
             sock.connect((host, port))
@@ -23,14 +18,12 @@ def send_payload(file_path, host, port=50000, tries=5):
             print(f"Sending file {file_path} ({len(data)} bytes)...")
             sock.sendall(data)
             
-            # Close the socket properly
             sock.close()
             
-            # Small delay to ensure data is sent
             time.sleep(0.5)
             
             print('done')
-            return True  # Success!
+            return True
             
         except ConnectionRefusedError:
             print(f"Connection refused: {host}:{port}")
@@ -40,14 +33,14 @@ def send_payload(file_path, host, port=50000, tries=5):
             print(f"Connection timeout: {host}:{port}")
         except FileNotFoundError:
             print(f"File not found: {file_path}")
-            return False  # No point retrying if file doesn't exist
+            return False
         except Exception as e:
             print(f"Unexpected error: {str(e)}")
         
-        attempt += 1  # Increment attempt counter
-        if attempt < tries:  # Only sleep if we're going to try again
+        attempt += 1
+        if attempt < tries:
             print(f"Attempt {attempt} failed, retrying...")
-            time.sleep(1)  # Wait before retry
+            time.sleep(1)
     
     print(f"Failed after {tries} attempts")
     return False
@@ -72,7 +65,7 @@ Note: Make sure the target server is listening on the specified port
     if len(sys.argv) > 3:
         port = int(sys.argv[3])
     else:
-        port = 50000  # Default port
+        port = 50000
 
     print(f"Starting transmission to {host}:{port}")
 
