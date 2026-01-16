@@ -1,42 +1,40 @@
 async function directDownload() {
-    const urlInput = document.getElementById('directUrlInput');
-    const url = urlInput.value.trim();
-    const statusEl = document.getElementById('uploadStatus'); 
-    
+    const input = document.getElementById('directUrlInput');
+    const url = input.value.trim();
+    const btn = document.querySelector('button[onclick="directDownload()"]');
+
     if (!url) {
-         statusEl.textContent = 'Please enter a URL';
-         statusEl.className = "text-xs text-right mb-2 text-red-500 font-bold";
-         return;
+        Toast.show('Please enter a valid URL', 'warning');
+        return;
     }
-    
-    statusEl.textContent = 'Downloading from URL...';
-    statusEl.className = "text-xs text-right mb-2 text-brand-light animate-pulse";
-    
+
+    const originalIcon = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    Toast.show('Downloading payload...', 'info');
+
     try {
         const response = await fetch('/download_payload_url', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({url: url})
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: url })
         });
-        
+
         const result = await response.json();
-        
+
         if (response.ok) {
-            statusEl.textContent = `Downloaded ${result.filename} successfully`;
-            statusEl.className = "text-xs text-right mb-2 text-green-500 font-bold";
-            urlInput.value = '';
-            if(typeof loadpayloads === 'function') loadpayloads();
+            Toast.show(`Saved as ${result.filename}`, 'success');
+            input.value = ''; 
+            if(window.loadpayloads) await window.loadpayloads(); 
         } else {
-            throw new Error(result.error || 'Download failed');
+            Toast.show(result.error || 'Download failed', 'error');
         }
+
     } catch (error) {
-        statusEl.textContent = `Error: ${error.message}`;
-        statusEl.className = "text-xs text-right mb-2 text-red-500 font-bold";
+        console.error(error);
+        Toast.show('Network error: ' + error.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalIcon;
     }
-    
-    setTimeout(() => {
-        if (statusEl.textContent.includes('success')) {
-            statusEl.textContent = "";
-        }
-    }, 3000);
 }
