@@ -82,7 +82,10 @@ If you did check the "Auto-Jailbreak" before pressing the "Start Jailbreak" butt
 - [EchoStretch](https://github.com/EchoStretch) | [kstuff](https://github.com/EchoStretch/kstuff)
 - [voidwhisper-ps](https://github.com/voidwhisper-ps) | [ShadowMount](https://github.com/voidwhisper-ps/ShadowMount)
 - [drakmor](https://github.com/drakmor) | [ftpsrv](https://github.com/drakmor/ftpsrv)
-  
+
+## Bugs & Feature Requests
+
+If you encounter any bugs or have ideas for new features, please submit them by opening an issue in this repository. Suggestions and feedback are welcome!
 
 ## TODO
 - [X] Add Y2JB auto update (download0.dat)
