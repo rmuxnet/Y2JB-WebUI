@@ -80,7 +80,7 @@ If you did check the "Auto-Jailbreak" before pressing the "Start Jailbreak" butt
 - [Gezine](https://github.com/Gezine) | [Y2JB](https://github.com/Gezine/Y2JB/)
 - [itsPLK ](https://github.com/itsPLK) | [ps5_y2jb_autoloader](https://github.com/itsPLK/ps5_y2jb_autoloader)
 - [EchoStretch](https://github.com/EchoStretch) | [kstuff](https://github.com/EchoStretch/kstuff)
-- [voidwhisper-ps](https://github.com/voidwhisper-ps) | [ShadowMount](https://github.com/voidwhisper-ps/ShadowMount)
+- [voidwhisper-ps](https://github.com/voidwhisper-ps) | [ShadowMount](https://github.com/adel-ailane/ShadowMount)
 - [drakmor](https://github.com/drakmor) | [ftpsrv](https://github.com/drakmor/ftpsrv)
 - [john-tornblom](https://github.com/john-tornblom) | [websrv](https://github.com/ps5-payload-dev/websrv)
 
