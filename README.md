@@ -44,6 +44,9 @@ You can configure:
 - **Sequence**: Toggle which payloads auto-load and set a global delay time.
 - **Appearance**: Toggle Dark Mode and UI Animations.
 
+### Netflix 'N Hack Integration
+Y2JB-WebUI includes a built-in manager for Netflix 'N Hack, allowing easy configuration and control of the exploit services. For full setup details, including extended storage and system backup, refer to the [Netflix-N-Hack repository](https://github.com/NetflixNHack/Netflix-N-Hack).
+
 ### Does this work with...
 You need something to host the server (pc, raspeberry pi, phone, ...) once the server is up you can access the WebUI from anything that can display a webpage (Android, IOS, PC, Nintendo Switch, ...).
 ### Can i upload any payload ?
