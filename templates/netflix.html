@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Y2JB - Netflix 'N Hack</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        oled: { base: '#000000', surface: '#121212', border: '#2a2a2a' },
+                        brand: { blue: '#00439c', light: '#0070d1' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/compact.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/toast.css') }}">
+    <script src="{{ url_for('static', filename='toast.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='color_mode.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='ui_features.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='netflix.js') }}" defer></script>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col p-6 max-w-4xl mx-auto bg-oled-base text-gray-200 transition-colors duration-300">
+
+    <header class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-4">
+            <a href="/" class="surface border w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors hover:border-brand-light group">
+                <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight text-red-500">Netflix 'N Hack</h1>
+                <p class="text-xs opacity-50 uppercase tracking-widest font-medium">Manager</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="space-y-6">
+        
+        <section class="surface border rounded-2xl p-6 transition-all animate-section stagger-1 border-red-500/20">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2 text-red-400">
+                <i class="fa-solid fa-cogs"></i> Configuration
+            </h2>
+            <p class="text-sm opacity-70 mb-4">Set the IP of this computer. This updates <code class="bg-black/40 px-1 rounded text-brand-light">inject.js</code> automatically.</p>
+            <div class="space-y-4">
+                <div>
+                    <label for="host-ip" class="block text-xs uppercase opacity-70 mb-1.5 font-bold">Host IP Address</label>
+                    <input type="text" id="host-ip" placeholder="e.g. 192.168.1.50" class="input-field block w-full px-4 py-3 border rounded-xl text-sm focus:ring-2 focus:ring-brand-light focus:border-transparent outline-none transition-all font-mono shadow-sm bg-black/20">
+                </div>
+                <div>
+                    <label for="host-port" class="block text-xs uppercase opacity-70 mb-1.5 font-bold">Port (Default 8080)</label>
+                    <input type="number" id="host-port" value="8080" class="input-field block w-full px-4 py-3 border rounded-xl text-sm focus:ring-2 focus:ring-brand-light focus:border-transparent outline-none transition-all font-mono shadow-sm bg-black/20">
+                </div>
+                <button onclick="saveConfig()" class="bg-gradient-to-r from-brand-blue to-brand-light hover:from-blue-600 hover:to-blue-500 text-white px-6 py-2 rounded-lg font-bold text-sm transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 border border-white/10">
+                    <i class="fa-solid fa-save mr-2"></i> Save Configuration
+                </button>
+            </div>
+        </section>
+
+        <section class="surface border rounded-2xl p-6 transition-all animate-section stagger-2 border-red-500/20">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2 text-red-400">
+                <i class="fa-solid fa-certificate"></i> Certificates
+            </h2>
+            <p class="text-sm opacity-70 mb-4">Generate <code class="bg-black/40 px-1 rounded text-brand-light">key.pem</code> and <code class="bg-black/40 px-1 rounded text-brand-light">cert.pem</code> required for the WebSocket server.</p>
+            <button onclick="generateCerts()" class="bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-2 rounded-lg font-bold text-sm transition-all shadow-lg border border-white/10">
+                <i class="fa-solid fa-key mr-2"></i> Generate Certificates (OpenSSL)
+            </button>
+            <div id="cert-output" class="text-xs mt-4 opacity-70"></div>
+        </section>
+
+        <section class="surface border rounded-2xl p-6 transition-all animate-section stagger-3 border-red-500/20">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2 text-red-400">
+                <i class="fa-solid fa-play-circle"></i> Service Control
+            </h2>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="flex items-center justify-between p-4 bg-black/20 rounded-xl border border-white/5">
+                    <span class="text-sm font-medium">MitmProxy</span>
+                    <span id="status-proxy" class="text-xs font-bold px-2 py-1 rounded uppercase tracking-wider bg-gray-500 text-white">STOPPED</span>
+                </div>
+                <div class="flex items-center justify-between p-4 bg-black/20 rounded-xl border border-white/5">
+                    <span class="text-sm font-medium">WebSocket</span>
+                    <span id="status-ws" class="text-xs font-bold px-2 py-1 rounded uppercase tracking-wider bg-gray-500 text-white">STOPPED</span>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="controlService('start')" class="flex-1 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-bold text-sm transition-all shadow-lg border border-white/10">
+                    <i class="fa-solid fa-play mr-2"></i> Start Services
+                </button>
+                <button onclick="controlService('stop')" class="flex-1 bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-bold text-sm transition-all shadow-lg border border-white/10">
+                    <i class="fa-solid fa-stop mr-2"></i> Stop Services
+                </button>
+            </div>
+        </section>
+
+        <section class="surface border rounded-2xl p-6 transition-all animate-section stagger-4 border-red-500/20">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2 text-red-400">
+                <i class="fa-solid fa-hdd"></i> Extended Storage Setup (PS4/PS5)
+            </h2>
+            <div class="space-y-4">
+                <div class="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
+                    <h4 class="text-sm font-bold text-yellow-400 mb-2">Warning</h4>
+                    <p class="text-xs opacity-70">This will wipe your drive. Only works on consoles with an activated account. Do not update to activate—use System Backup method below.</p>
+                </div>
+                <details class="group">
+                    <summary class="cursor-pointer text-sm font-medium opacity-70 hover:opacity-100 transition-opacity flex items-center gap-2">
+                        <i class="fa-solid fa-chevron-right transition-transform group-open:rotate-90"></i> PS4 Extended Storage Setup
+                    </summary>
+                    <div class="mt-4 space-y-3 text-sm opacity-70">
+                        <p>Requires PS4 firmware 9.00-12.02, 256GB+ USB drive, USB 3.0 connection.</p>
+                        <ol class="list-decimal list-inside space-y-1">
+                            <li>Delete Netflix app if installed, turn off console, plug in drive, turn on.</li>
+                            <li>Download balenaEtcher from <a href="https://etcher.balena.io" class="text-brand-light underline">etcher.balena.io</a>.</li>
+                            <li>Download .7z archive for your region (Netflix_PS4_xx.7z) from Releases.</li>
+                            <li>Extract .7z, flash .zip with Etcher to drive.</li>
+                            <li>Move app to internal storage: Settings > Storage > Extended Storage > Applications > Move To System Storage.</li>
+                        </ol>
+                    </div>
+                </details>
+                <details class="group">
+                    <summary class="cursor-pointer text-sm font-medium opacity-70 hover:opacity-100 transition-opacity flex items-center gap-2">
+                        <i class="fa-solid fa-chevron-right transition-transform group-open:rotate-90"></i> PS5 Extended Storage Setup
+                    </summary>
+                    <div class="mt-4 space-y-3 text-sm opacity-70">
+                        <p>Plug in drive while console is off, then turn on.</p>
+                        <ol class="list-decimal list-inside space-y-1">
+                            <li>Download balenaEtcher.</li>
+                            <li>Download PS5_EU_Ext.7z from Releases.</li>
+                            <li>Extract and flash .zip to drive.</li>
+                            <li>Move app: Settings > Storage > USB Extended Storage > Games and Apps > Select Items to Move > Move.</li>
+                        </ol>
+                    </div>
+                </details>
+                <details class="group">
+                    <summary class="cursor-pointer text-sm font-medium opacity-70 hover:opacity-100 transition-opacity flex items-center gap-2">
+                        <i class="fa-solid fa-chevron-right transition-transform group-open:rotate-90"></i> M.2 Drive Setup (PS5)
+                    </summary>
+                    <div class="mt-4 space-y-3 text-sm opacity-70">
+                        <p>Exact capacity matters (256GB/500GB/1TB/2TB/4TB).</p>
+                        <ol class="list-decimal list-inside space-y-1">
+                            <li>Download balenaEtcher.</li>
+                            <li>Download .7z for your capacity from Releases.</li>
+                            <li>Extract and flash .zip to M.2 SSD.</li>
+                            <li>Install M.2 in PS5, move app to internal storage, reformat drive.</li>
+                        </ol>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <section class="surface border rounded-2xl p-6 transition-all animate-section stagger-5 border-red-500/20">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2 text-red-400">
+                <i class="fa-solid fa-download"></i> System Backup Restore
+            </h2>
+            <div class="bg-red-500/10 border border-red-500/20 rounded-lg p-4 mb-4">
+                <h4 class="text-sm font-bold text-red-400 mb-2">Warning</h4>
+                <p class="text-xs opacity-70">This will wipe all existing games and saves from your PS5!</p>
+            </div>
+            <div class="space-y-3 text-sm opacity-70">
+                <ol class="list-decimal list-inside space-y-1">
+                    <li>Format USB as exFAT/FAT32, unzip system backup onto it.</li>
+                    <li>Follow Sony's guide: <a href="https://www.playstation.com/en-us/support/hardware/back-up-ps5-data-USB" class="text-brand-light underline">Restore PS5 system</a>.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="surface border rounded-2xl p-6 transition-all animate-section stagger-6 border-red-500/20">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2 text-red-400">
+                <i class="fa-solid fa-wifi"></i> Safe Internet Connection Setup
+            </h2>
+            <div class="space-y-3 text-sm opacity-70">
+                <ol class="list-decimal list-inside space-y-1">
+                    <li>Settings > Network > Settings > Set Up Internet Connection > Set Up Manually.</li>
+                    <li>Choose Wi-Fi or LAN, enter credentials if Wi-Fi.</li>
+                    <li>Set Proxy to Manual: Address <code class="bg-black/40 px-1 rounded text-brand-light">172.105.156.37</code>, Port <code class="bg-black/40 px-1 rounded text-brand-light">42069</code>.</li>
+                    <li>Ignore "Can't connect" error—connection works.</li>
+                </ol>
+                <p>You can now open Netflix safely.</p>
+            </div>
+        </section>
+
+        <section class="surface border rounded-2xl p-6 transition-all animate-section stagger-7 border-red-500/20">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2 text-red-400">
+                <i class="fa-solid fa-question-circle"></i> Quick Setup Guide
+            </h2>
+            <ol class="space-y-3 text-sm opacity-70">
+                <li>Enter your PC's IP address above and click <strong>Save Configuration</strong>.</li>
+                <li>Click <strong>Generate Certificates</strong> (Required once).</li>
+                <li>Click <strong>Start Services</strong>. Ensure Proxy and WebSocket turn <span class="text-green-400 font-bold">ON</span>.</li>
+                <li>On PS5: Settings > Network > Settings > Set Up Manually.</li>
+                <li>Set Proxy to <strong>Use</strong>. Address: <code class="bg-black/40 px-1 rounded text-brand-light">[Your PC IP]</code>, Port: <code class="bg-black/40 px-1 rounded text-brand-light">8080</code>.</li>
+                <li>Open the Netflix App on PS5 to trigger the exploit.</li>
+            </ol>
+        </section>
+
+        <section class="surface border rounded-2xl p-6 transition-all animate-section stagger-8 border-red-500/20">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2 text-red-400">
+                <i class="fa-solid fa-tools"></i> Troubleshooting
+            </h2>
+            <ul class="space-y-2 text-sm opacity-70">
+                <li>If Netflix crashes after opening, reopen to retry.</li>
+                <li>If you see green "Exception" error, press X/O to retry.</li>
+                <li>If Lapse fails, reboot console as prompted.</li>
+                <li>Ensure mitmproxy and WebSocket are running.</li>
+                <li>Check firewall/antivirus blocking ports.</li>
+            </ul>
+        </section>
+
+    </main>
+
+</body>
+</html>

@@ -21,10 +21,14 @@ import uuid
 from src.dns_server import DNSServer
 from src.backpork.core import BackporkEngine
 from src.features import setup_logging, run_startup_tasks
+from src.netflix_manager import NetflixManager
 
 app = Flask(__name__)
 app.secret_key = 'Nazky'
 CORS(app)
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+netflix_mgr = NetflixManager(ROOT_DIR)
 
 dns_service = None
 
@@ -754,6 +758,36 @@ def handle_backpork_settings():
 def run_backpork_process():
     data = request.json
     return Response(BackporkEngine.run_process(data), mimetype='text/event-stream')
+
+@app.route('/netflix')
+def netflix_dashboard():
+    return render_template('netflix.html')
+
+@app.route('/api/netflix/status', methods=['GET'])
+def api_netflix_status():
+    return jsonify(netflix_mgr.get_status())
+
+@app.route('/api/netflix/config', methods=['POST'])
+def api_netflix_config():
+    data = request.json
+    success, msg = netflix_mgr.update_config(data.get('ip'), data.get('port', 8080))
+    return jsonify({"success": success, "message": msg})
+
+@app.route('/api/netflix/cert', methods=['POST'])
+def api_netflix_cert():
+    success, msg = netflix_mgr.generate_certs()
+    return jsonify({"success": success, "message": msg})
+
+@app.route('/api/netflix/control', methods=['POST'])
+def api_netflix_control():
+    action = request.json.get('action')
+    if action == 'start':
+        success, msg = netflix_mgr.start_services()
+    elif action == 'stop':
+        success, msg = netflix_mgr.stop_services()
+    else:
+        success, msg = False, "Invalid action"
+    return jsonify({"success": success, "message": msg})
 
 if __name__ == "__main__":
     config = get_config()

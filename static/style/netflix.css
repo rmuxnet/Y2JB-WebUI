@@ -1,0 +1,110 @@
+html.dark body { background-color: #000000; color: #e5e5e5; }
+html.dark .surface { background-color: #121212; border-color: #2a2a2a; }
+html.dark .input-field { background-color: #000000; border-color: #333; color: white; }
+
+body {
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: 'Share Tech', sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #333;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.nav-back {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 1.2em;
+    border: 1px solid #444;
+    padding: 5px 15px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.nav-back:hover {
+    background: #333;
+    color: #fff;
+}
+
+h1 { color: #e50914; margin: 0; }
+h2 { color: #fff; border-bottom: 1px solid #444; padding-bottom: 10px; }
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.panel {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.input-group { margin-bottom: 15px; }
+label { display: block; margin-bottom: 5px; color: #888; }
+input {
+    width: 90%;
+    padding: 10px;
+    background: #333;
+    border: 1px solid #555;
+    color: #fff;
+    font-family: inherit;
+    font-size: 1em;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    font-family: inherit;
+    font-size: 1.1em;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: 0.2s;
+}
+
+.btn-blue { background: #0070f3; color: white; }
+.btn-blue:hover { background: #005bb5; }
+
+.btn-yellow { background: #f5a623; color: black; }
+.btn-yellow:hover { background: #d48e15; }
+
+.btn-green { background: #198754; color: white; margin-bottom: 10px; }
+.btn-green:hover { background: #146c43; }
+
+.btn-red { background: #dc3545; color: white; }
+.btn-red:hover { background: #b02a37; }
+
+.status-indicators {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+    font-size: 1.2em;
+}
+
+.indicator { font-weight: bold; }
+.indicator.off { color: #666; }
+.indicator.on { color: #10b981; }
+
+.text-red-500 { color: #e50914; }
+.text-red-400 { color: #f87171; }
+.border-red-500\/20 { border-color: rgba(229, 9, 20, 0.2); }
+
+.instructions {
+    margin-top: 40px;
+    background: #1a1a1a;
+    padding: 20px;
+    border-left: 4px solid #e50914;
+}
+.instructions li { margin-bottom: 10px; color: #ccc; }
