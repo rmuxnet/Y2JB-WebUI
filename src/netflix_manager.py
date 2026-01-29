@@ -24,7 +24,7 @@ class NetflixManager:
         }
 
     def update_config(self, ip_address, port):
-        files_to_patch = ["inject.js", "inject_elfldr_automated.js"]
+        target_file = "inject_elfldr_automated.js"
         
         ip_pattern = r'(const ip_script = ")(.*?)(";)'
         port_pattern = r'(const ip_script_port = )(\d+)(;)'
@@ -33,19 +33,18 @@ class NetflixManager:
             if not self.hack_dir.exists():
                 return False, "netflix_hack directory not found."
 
-            for filename in files_to_patch:
-                file_path = self.hack_dir / filename
-                if not file_path.exists():
-                    continue
+            file_path = self.hack_dir / target_file
+            if not file_path.exists():
+                return False, f"{target_file} not found in netflix_hack/"
 
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    content = f.read()
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
 
-                content = re.sub(ip_pattern, f'\\g<1>{ip_address}\\g<3>', content)
-                content = re.sub(port_pattern, f'\\g<1>{port}\\g<3>', content)
+            content = re.sub(ip_pattern, f'\\g<1>{ip_address}\\g<3>', content)
+            content = re.sub(port_pattern, f'\\g<1>{port}\\g<3>', content)
 
-                with open(file_path, 'w', encoding='utf-8') as f:
-                    f.write(content)
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(content)
             
             return True, f"Configuration updated to {ip_address}:{port}"
         except Exception as e:
@@ -94,7 +93,7 @@ class NetflixManager:
             with open(cert_path, "wb") as f:
                 f.write(cert.public_bytes(serialization.Encoding.PEM))
 
-            return True, "Certificates (key.pem, cert.pem) generated successfully using Python."
+            return True, "Certificates generated successfully."
 
         except Exception as e:
             return False, f"Certificate Generation Failed: {str(e)}"
@@ -103,7 +102,10 @@ class NetflixManager:
         if self.get_status()["proxy"]:
             return False, "Services are already running."
 
-        if not (self.hack_dir / "key.pem").exists() or not (self.hack_dir / "cert.pem").exists():
+        if not (self.hack_dir / "payloads").exists():
+             return False, "Error: 'payloads' folder missing inside netflix_hack/"
+
+        if not (self.hack_dir / "key.pem").exists():
             return False, "Certificates missing. Please generate them first."
 
         try:
